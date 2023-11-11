@@ -155,19 +155,19 @@ void CreateItem() {
             break;
     }
 }
-void DeleteItem() {
+void DeleteItem() { // 삭제만 처리 or 과정까지 처리
     if (detectCollision()) { // 수정
         item->itemNo = -1;
-        
+        printf(" ");
     }
     else {
         time_t currentTime;
         time(&currentTime);
 
         if (difftime(currentTime, itemCreationTime) >= 7) {
-            DeleteItem();
+            item->itemNo = -1;
+            printf(" ");
         }
-
     }
 }
 
