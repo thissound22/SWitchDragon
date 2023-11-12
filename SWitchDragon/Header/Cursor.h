@@ -1,4 +1,5 @@
-#pragma warning(disable:4996)
+#ifndef __CURSOR_H__
+#define __CURSOR_H__
 
 #include <stdio.h>
 #include <string.h>
@@ -15,12 +16,11 @@
 #include "UserControl.h"
 #include "EtcFunction.h"
 
-int main() {
-    console();
-    removeCursor();
-    system("cls");
-    drawBoard();
-    getch();
+// change console size
+void console();
 
-    return 0;
-}
+void setCurrentCursorPos(int x, int y);
+COORD getCurrentCursorPos();
+void removeCursor();
+
+#endif
