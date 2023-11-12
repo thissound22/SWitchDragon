@@ -14,6 +14,7 @@
 #include "DrawMap.h"
 #include "UserControl.h"
 #include "EtcFunction.h"
+#include "Item.h"
 
 int main() {
     console();
