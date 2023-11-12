@@ -20,9 +20,9 @@ void InitMoogi() {
     addBody->right = moogiHead;
     addBody->left = moogiTail;
     
-    addBody->pos.X = GBOARD_WIDTH / 2;
-    addBody->pos.Y = GBOARD_HEIGHT / 2;
-    addBody->direction = RIGHT;
+    addBody->position.X = GBOARD_WIDTH / 2;
+    addBody->position.Y = GBOARD_HEIGHT / 2;
+    addBody->direct = RIGHT;
     moogiTail->right = addBody;
     moogiTail->left = NULL;
 
@@ -40,22 +40,22 @@ void AddBody() {
     newBody->right = moogiTail->right;
     moogiTail->right = newBody;
     newBody->right->left = newBody;
-    newBody->direction = tmp->direction;
+    newBody->direct = tmp->direct;
 
-    newBody->pos.X = tmp->pos.X;
-    newBody->pos.Y = tmp->pos.Y;
+    newBody->position.X = tmp->position.X;
+    newBody->position.Y = tmp->position.Y;
 
     length++;
 
-    switch (tmp->direction) {
+    switch (tmp->direct) {
     case LEFT:
-        newBody->pos.X++; break;
+        newBody->position.X++; break;
     case RIGHT:
-        newBody->pos.X--; break;
+        newBody->position.X--; break;
     case UP:
-        newBody->pos.Y++; break;
+        newBody->position.Y++; break;
     case DOWN:
-        newBody->pos.Y--; break;
+        newBody->position.Y--; break;
     default:
         break;
     }
