@@ -57,22 +57,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		939F1A772B00954300E27648 /* Header */ = {
-			isa = PBXGroup;
-			children = (
-				939F1A742B00941C00E27648 /* Constants.h */,
-				939F1A752B00942100E27648 /* Moogi.h */,
-				939F1A782B0095E800E27648 /* Item.h */,
-				939F1A762B00942800E27648 /* Globals.h */,
-				939F1A6E2B0093CF00E27648 /* Cursor.h */,
-				939F1A652B00938600E27648 /* DrawMap.h */,
-				939F1A682B00939800E27648 /* UserControl.h */,
-				939F1A712B0093F000E27648 /* DifficultyControl.h */,
-				939F1A6B2B0093AC00E27648 /* EtcFunction.h */,
-			);
-			path = Header;
-			sourceTree = "<group>";
-		};
 		93A912CC2AFD417D009353BC = {
 			isa = PBXGroup;
 			children = (
@@ -92,7 +76,15 @@
 		93A912D72AFD417D009353BC /* SWitchDragon */ = {
 			isa = PBXGroup;
 			children = (
-				939F1A772B00954300E27648 /* Header */,
+				939F1A742B00941C00E27648 /* Constants.h */,
+				939F1A752B00942100E27648 /* Moogi.h */,
+				939F1A782B0095E800E27648 /* Item.h */,
+				939F1A762B00942800E27648 /* Globals.h */,
+				939F1A6E2B0093CF00E27648 /* Cursor.h */,
+				939F1A652B00938600E27648 /* DrawMap.h */,
+				939F1A682B00939800E27648 /* UserControl.h */,
+				939F1A712B0093F000E27648 /* DifficultyControl.h */,
+				939F1A6B2B0093AC00E27648 /* EtcFunction.h */,
 				939F1A6F2B0093CF00E27648 /* Cursor.c */,
 				939F1A662B00938600E27648 /* DrawMap.c */,
 				939F1A692B00939800E27648 /* UserControl.c */,
