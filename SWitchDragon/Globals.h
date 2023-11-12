@@ -30,11 +30,11 @@ extern int curPosX, curPosY;
 //int tailPosY; // COORD tailPos(의견)
 
 /* (추가) */
-pMoogi moogiHead;
-pMoogi moogiTail;
-pMoogi addBody;
-pItem item;
-time_t itemCreationTime;
+extern pMoogi moogiHead;
+extern pMoogi moogiTail;
+extern pMoogi addBody;
+extern pItem item;
+extern time_t itemCreationTime;
 
 int length;
 int minLength = 1;
