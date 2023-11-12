@@ -10,6 +10,7 @@
 
 #include "Constants.h"
 #include "Moogi.h"
+#include "Item.h"
 
 extern int gameBoardInfo[GBOARD_HEIGHT + 1][GBOARD_WIDTH + 2];
 extern int direction;
