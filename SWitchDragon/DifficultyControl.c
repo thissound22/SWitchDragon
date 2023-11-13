@@ -81,7 +81,7 @@ void createItem() {
 
     time(&itemCreationTime);
 
-    item->itemNo = rand() % 2; // 아이템 종류 2가지
+    item->itemNo = rand() % 2 + 4; // 아이템 종류 2가지
     item->pos.X = rand() % GBOARD_WIDTH;
     item->pos.Y = rand() % GBOARD_HEIGHT;
     
