@@ -12,6 +12,7 @@
 		939F1A6D2B0093AC00E27648 /* EtcFunction.c in Sources */ = {isa = PBXBuildFile; fileRef = 939F1A6C2B0093AC00E27648 /* EtcFunction.c */; };
 		939F1A702B0093CF00E27648 /* Cursor.c in Sources */ = {isa = PBXBuildFile; fileRef = 939F1A6F2B0093CF00E27648 /* Cursor.c */; };
 		939F1A732B0093F000E27648 /* DifficultyControl.c in Sources */ = {isa = PBXBuildFile; fileRef = 939F1A722B0093F000E27648 /* DifficultyControl.c */; };
+		939F1A7A2B0227A000E27648 /* 소스.c in Sources */ = {isa = PBXBuildFile; fileRef = 939F1A792B0227A000E27648 /* 소스.c */; };
 		93A912D92AFD417D009353BC /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 93A912D82AFD417D009353BC /* main.c */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,7 @@
 		939F1A752B00942100E27648 /* Moogi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Moogi.h; sourceTree = "<group>"; };
 		939F1A762B00942800E27648 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		939F1A782B0095E800E27648 /* Item.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
+		939F1A792B0227A000E27648 /* 소스.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "소스.c"; sourceTree = "<group>"; };
 		93A912D52AFD417D009353BC /* SWitchDragon */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SWitchDragon; sourceTree = BUILT_PRODUCTS_DIR; };
 		93A912D82AFD417D009353BC /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -91,6 +93,7 @@
 				939F1A722B0093F000E27648 /* DifficultyControl.c */,
 				939F1A6C2B0093AC00E27648 /* EtcFunction.c */,
 				93A912D82AFD417D009353BC /* main.c */,
+				939F1A792B0227A000E27648 /* 소스.c */,
 			);
 			path = SWitchDragon;
 			sourceTree = "<group>";
@@ -156,6 +159,7 @@
 				93A912D92AFD417D009353BC /* main.c in Sources */,
 				939F1A6A2B00939800E27648 /* UserControl.c in Sources */,
 				939F1A672B00938600E27648 /* DrawMap.c in Sources */,
+				939F1A7A2B0227A000E27648 /* 소스.c in Sources */,
 				939F1A732B0093F000E27648 /* DifficultyControl.c in Sources */,
 				939F1A702B0093CF00E27648 /* Cursor.c in Sources */,
 			);
