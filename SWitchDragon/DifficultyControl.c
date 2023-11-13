@@ -111,3 +111,56 @@ void deleteItem() { // 삭제만 처리 or 과정까지 처리
         }
     }
 }
+// 호출 : 구슬을 먹으면 실행
+// 이미 벽 또는 아이템이 출력된 곳에 출력하면 X
+void addWall() {
+   int wallX = (rand() % GBOARD_WIDTH) + GBOARD_ORIGIN_X;
+   int wallY = (rand() % GBOARD_HEIGHT) + GBOARD_ORIGIN_Y;
+
+   do {
+      wallX = (rand() % GBOARD_WIDTH) + GBOARD_ORIGIN_X;
+      wallY = (rand() % GBOARD_HEIGHT) + GBOARD_ORIGIN_Y;
+   } while (detectCollision(wallX, wallY)); // 아무것도 없으면 0 반환됨
+
+   gotoxy(wallX, wallY, "▨");
+   gameBoardInfo[wallX][wallY] = 1; // 벽 1
+}
+
+// 여기서부터는 EtcFunction-getItem()과 겹침
+// 아이템 종류1(좋은, 나쁜) 별로 색깔 다르게 출력하면 될 듯
+void goodItem(int itemNo) {
+    int itemNo2 = rand() % 2;
+    switch (itemNo2) {
+    case 0:
+        speedDown();
+        gotoxy(INFO_X, ITEM_Y, "속도 감소 아이템을 얻었습니다!"); // 위치 수정
+        break;
+    case 1:
+        lengthDec();
+        gotoxy(INFO_X, ITEM_Y, "길이 감소 아이템을 얻었습니다!"); // 위치 수정
+        break;
+    default:
+        break;
+    }
+}
+void badItem(int itemNo) {
+    int itemNo2 = rand() % 2;
+    switch (itemNo2) {
+    case 0:
+        speedUp();
+        gotoxy(INFO_X, ITEM_Y, "속도 증가 아이템을 얻었습니다!"); // 위치 수정
+        break;
+    case 1:
+        lengthInc();
+        gotoxy(INFO_X, ITEM_Y, "속도 감소 아이템을 얻었습니다!"); // 위치 수정
+        break;
+    default:
+        break;
+    }
+}
+void lengthDec() {
+    deleteBody();
+}
+void lengthInc() {
+    addBody();
+}

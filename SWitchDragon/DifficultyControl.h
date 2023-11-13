@@ -12,9 +12,12 @@
 #include "Item.h"
 #include "Globals.h"
 
+#define INFO_X 40
+#define ITEM_Y 40
 
 void setCurrentCursorPos(int, int);
-int detectCollision(); // 임시로 추가
+int detectCollision(); 
+void gotoxy(int, int, char *); // 임시로 추가
 
 /* 난이도 제어 함수 */
 void initMoogi();
@@ -29,6 +32,10 @@ void deleteItem();
 // void showPet();
 // void deletePet();
 // void randomCoord();
+void goodItem(int);
+void badItem(int);
+void lengthDec();
+void lengthInc();
 
 
 #endif /* DifficultyControl_h */
