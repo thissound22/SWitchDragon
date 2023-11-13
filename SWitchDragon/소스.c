@@ -60,7 +60,6 @@ int detectCollision(int, int);
 void speedUp();
 void speedDown();
 
-
 /* 추가 */
 Moogi* head;
 void gotoxy(int, int, char*);

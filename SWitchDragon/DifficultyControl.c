@@ -9,7 +9,7 @@
 
 #include "DifficultyControl.h"
 
-void InitMoogi() {
+void initMoogi() {
     moogiHead = (Moogi*)malloc(sizeof(Moogi));
     moogiTail = (Moogi*)malloc(sizeof(Moogi));
     addBody = (Moogi*)malloc(sizeof(Moogi));
@@ -30,7 +30,7 @@ void InitMoogi() {
     
     AddBody();
 }
-void AddBody() {
+void addBody() {
     // 화면 공간 예외 처리
  
     pMoogi newBody = (Moogi*)malloc(sizeof(Moogi));
@@ -61,7 +61,7 @@ void AddBody() {
     }
 }
 
-void DeleteBody() {
+void deleteBody() {
     if (length > minLength) { // 최소길이보다 클 때만 실행
         pMoogi tmp = moogiTail->left;
         tmp->left->right = moogiTail;
@@ -70,15 +70,15 @@ void DeleteBody() {
         length--;
     }
 }
-void SpeedUp() {
+void speedUp() {
     if (speed < maxSpeed) // 최대 속도 리밋
         speed += 10;
 }
-void SpeedDown() {
+void speedDown() {
     if (speed > minSpeed) // 최소 속도 리밋
         speed -= 10;
 }
-void CreateItem() {
+void createItem() {
     item = (Item*)sizeof(Item);
 
     time(&itemCreationTime);
@@ -98,7 +98,7 @@ void CreateItem() {
             break;
     }
 }
-void DeleteItem() { // 삭제만 처리 or 과정까지 처리
+void deleteItem() { // 삭제만 처리 or 과정까지 처리
     if (detectCollision()) { // 수정
         item->itemNo = -1;
         printf(" ");
@@ -113,4 +113,3 @@ void DeleteItem() { // 삭제만 처리 or 과정까지 처리
         }
     }
 }
-
