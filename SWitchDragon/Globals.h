@@ -32,7 +32,7 @@ extern int curPosX, curPosY;
 /* (추가) */
 extern pMoogi moogiHead;
 extern pMoogi moogiTail;
-extern pMoogi addBody;
+extern pMoogi moogiBody;
 extern pItem item;
 extern time_t itemCreationTime;
 

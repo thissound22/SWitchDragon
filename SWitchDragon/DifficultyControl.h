@@ -13,22 +13,22 @@
 #include "Globals.h"
 
 
-void SetCurrentCursorPos(int, int);
+void setCurrentCursorPos(int, int);
 int detectCollision(); // 임시로 추가
 
 /* 난이도 제어 함수 */
-void InitMoogi();
+void initMoogi();
 // void Switch(int, COORD, COORD);
-void AddBody();
-void DeleteBody();
-void SpeedUp();
-void SpeedDown();
-void CreateItem();
-void DeleteItem();
-// void Pet();
-// void ShowPet();
-// void DeletePet();
-// void RandomCoord();
+void addBody();
+void deleteBody();
+void speedUp();
+void speedDown();
+void createItem();
+void deleteItem();
+// void pet();
+// void showPet();
+// void deletePet();
+// void randomCoord();
 
 
 #endif /* DifficultyControl_h */

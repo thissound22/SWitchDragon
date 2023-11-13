@@ -12,23 +12,21 @@
 void initMoogi() {
     moogiHead = (Moogi*)malloc(sizeof(Moogi));
     moogiTail = (Moogi*)malloc(sizeof(Moogi));
-    addBody = (Moogi*)malloc(sizeof(Moogi));
+    moogiBody = (Moogi*)malloc(sizeof(Moogi));
     item = (Item*)malloc(sizeof(Item));
     
     moogiHead->right = NULL;
-    moogiHead->left = addBody;
-    addBody->right = moogiHead;
-    addBody->left = moogiTail;
+    moogiHead->left = moogiBody;
+    moogiBody->right = moogiHead;
+    moogiBody->left = moogiTail;
     
-    addBody->position.X = GBOARD_WIDTH / 2;
-    addBody->position.Y = GBOARD_HEIGHT / 2;
-    addBody->direct = RIGHT;
-    moogiTail->right = addBody;
+    moogiBody->position.X = GBOARD_WIDTH / 2;
+    moogiBody->position.Y = GBOARD_HEIGHT / 2;
+    moogiBody->direct = RIGHT;
+    moogiTail->right = moogiBody;
     moogiTail->left = NULL;
 
-    item->itemNo = -1;
-    
-    AddBody();
+    item->itemNo = -1; // 아무 아이템도 출력되지 않음
 }
 void addBody() {
     // 화면 공간 예외 처리
@@ -87,7 +85,7 @@ void createItem() {
     item->pos.X = rand() % GBOARD_WIDTH;
     item->pos.Y = rand() % GBOARD_HEIGHT;
     
-    SetCurrentCursorPos(item->pos.X, item->pos.Y); // 몸 제외 위치
+    setCurrentCursorPos(item->pos.X, item->pos.Y); // 몸 제외 위치
     
     switch (item->itemNo) {
         case 0:
