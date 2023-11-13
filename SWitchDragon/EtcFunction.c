@@ -51,13 +51,14 @@ int isGameOver() {        //리턴값이 1이면 게임종료해야됨
     return 0;            //아니면 0
 }
 
+// 시도 : goodOrBad을 item->itemNo으로 변경
 void getItem() {
     /*메인에서 이거 불러야됨
     srand((unsigned int)time(NULL));*/
-    int goodOrBad = detectCollision(head->position.X, head->position.Y);
-    if (goodOrBad == 4) {    //좋은아이템(길이↓, 속도↓, FEVER, 실드, 여의주생성)
-        int item = (rand() % 2) + 1;//(rand() % 5) + 1; 원래 이건데 지금은 아이템 2개만
-        switch (item) {
+    item->itemNo = detectCollision(head->position.X, head->position.Y);
+    if (item->itemNo == 4) {    //좋은아이템(길이↓, 속도↓, FEVER, 실드, 여의주생성)
+        int itemType = (rand() % 2) + 1;//(rand() % 5) + 1; 원래 이건데 지금은 아이템 2개만
+        switch (itemType) {
         case 1:        //길이↓
             deleteBody();
             gotoxy(INFO_X, ITEM_Y, "길이가 줄어듭니다!");
@@ -68,9 +69,9 @@ void getItem() {
             break;
         }
     }
-    else if (goodOrBad == 5) {    //안좋은아이템 (길이↑, 속도↑)
-        int item = (rand() % 2) + 1;
-        switch (item) {
+    else if (item->itemNo == 5) {    //안좋은아이템 (길이↑, 속도↑)
+        int itemType = (rand() % 2) + 1;
+        switch (itemType) {
         case 1:        //길이↑
             addBody();
             gotoxy(INFO_X, ITEM_Y, "길이가 늘어납니다!");

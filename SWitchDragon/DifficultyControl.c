@@ -97,20 +97,13 @@ void createItem() {
     }
 }
 void deleteItem() { // 삭제만 처리 or 과정까지 처리
-    if (detectCollision()) { // 수정
+    time_t currentTime;
+    time(&currentTime);
+
+    if ((int)difftime(currentTime, itemCreationTime) >= 7) {
         item->itemNo = -1;
         printf(" ");
-    }
-    else {
-        time_t currentTime;
-        time(&currentTime);
-
-        if (difftime(currentTime, itemCreationTime) >= 7) {
-            item->itemNo = -1;
-            printf(" ");
-        }
-    }
-}
+    }}
 // 호출 : 구슬을 먹으면 실행
 // 이미 벽 또는 아이템이 출력된 곳에 출력하면 X
 void addWall() {
