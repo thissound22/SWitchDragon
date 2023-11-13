@@ -59,14 +59,12 @@ void getItem() {
         int item = (rand() % 2) + 1;//(rand() % 5) + 1; 원래 이건데 지금은 아이템 2개만
         switch (item) {
         case 1:        //길이↓
-            deleteBody(tail);
-            //setCurrentCursorPos(정해진위치..);
-            printf("길이 감소!");
+            deleteBody();
+            gotoxy(INFO_X, ITEM_Y, "길이가 줄어듭니다!");
             break;
         case 2:        //속도↓
-            speedDown(speed);
-            //setCurrentCursorPos(정해진위치..);
-            printf("속도 감소!");
+            speedDown();
+            gotoxy(INFO_X, ITEM_Y, "속도가 감소합니다!");
             break;
         }
     }
@@ -74,10 +72,14 @@ void getItem() {
         int item = (rand() % 2) + 1;
         switch (item) {
         case 1:        //길이↑
-            addBody(tail);
+            addBody();
+            gotoxy(INFO_X, ITEM_Y, "길이가 늘어납니다!");
+
             break;
         case 2:        //속도↑
-            speedUp(speed);
+            speedUp();
+            gotoxy(INFO_X, ITEM_Y, "속도가 증가합니다!"); 
+
             break;
         }
     }
