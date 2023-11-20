@@ -55,7 +55,7 @@ int isGameOver() {        //리턴값이 1이면 게임종료해야됨
 void getItem() {
     /*메인에서 이거 불러야됨
     srand((unsigned int)time(NULL));*/
-    item->itemNo = detectCollision(head->position.X, head->position.Y);
+    // detectCollision(head->position.X, head->position.Y);
     if (item->itemNo == 4) {    //좋은아이템(길이↓, 속도↓, FEVER, 실드, 여의주생성)
         int itemType = (rand() % 2) + 1;//(rand() % 5) + 1; 원래 이건데 지금은 아이템 2개만
         switch (itemType) {

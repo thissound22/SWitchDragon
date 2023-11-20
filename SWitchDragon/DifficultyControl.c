@@ -58,7 +58,6 @@ void addBody() {
         break;
     }
 }
-
 void deleteBody() {
     if (length > minLength) { // 최소길이보다 클 때만 실행
         pMoogi tmp = moogiTail->left;
@@ -80,17 +79,17 @@ void createItem() {
     item = (Item*)sizeof(Item);
 
     time(&itemCreationTime);
-
     item->itemNo = rand() % 2 + 4; // 아이템 종류 2가지
-    item->pos.X = rand() % GBOARD_WIDTH;
-    item->pos.Y = rand() % GBOARD_HEIGHT;
-    
-    setCurrentCursorPos(item->pos.X, item->pos.Y); // 몸 제외 위치
+
+    do {
+        item->pos.X = (rand() % GBOARD_WIDTH) + GBOARD_ORIGIN_X;
+        item->pos.Y = (rand() % GBOARD_HEIGHT) + GBOARD_ORIGIN_Y;
+    } while (detectCollision(item->pos.X, item->pos.Y)); // 아무것도 없으면 0 반환됨
     
     switch (item->itemNo) {
-        case 0:
+        case 4:
             printf("▲"); break;
-        case 1:
+        case 5:
             printf("▼"); break;
         default:
             break;
@@ -99,16 +98,17 @@ void createItem() {
 void deleteItem() { // 삭제만 처리 or 과정까지 처리
     time_t currentTime;
     time(&currentTime);
-
+    
     if ((int)difftime(currentTime, itemCreationTime) >= 7) {
         item->itemNo = -1;
         printf(" ");
-    }}
+    }
+}
 // 호출 : 구슬을 먹으면 실행
 // 이미 벽 또는 아이템이 출력된 곳에 출력하면 X
 void addWall() {
-   int wallX = (rand() % GBOARD_WIDTH) + GBOARD_ORIGIN_X;
-   int wallY = (rand() % GBOARD_HEIGHT) + GBOARD_ORIGIN_Y;
+   int wallX;
+   int wallY;
 
    do {
       wallX = (rand() % GBOARD_WIDTH) + GBOARD_ORIGIN_X;

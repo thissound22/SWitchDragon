@@ -36,6 +36,6 @@ void goodItem(int);
 void badItem(int);
 void lengthDec();
 void lengthInc();
-
+void detectCollision(int, int);
 
 #endif /* DifficultyControl_h */
