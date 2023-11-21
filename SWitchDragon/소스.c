@@ -86,9 +86,13 @@ int stage = 0;
 int stageBestScore[5] = { 0,0,0,0,0 };
 int speed = 15;
 int heart = 3;
-int fever[5] = { 0,0,0,0,0 };
 int dragonBallCount = 0;
 int itemCount = 0;
+
+int fever[5] = { 0,0,0,0,0 };
+int feverStart = 0;
+int feverScore = 20;
+time_t ferverStartTime;
 
 Moogi* head = NULL;
 Moogi* body = NULL;
@@ -106,11 +110,12 @@ int maxSpeed = 25;
 int currentScore = 0;
 
 Wall* wallHead;
-int moogiColor = 4;   //5가지 색상만 사용. 0→4(dark red), 1→6(dark yellow), 2→2(dark green), 3→9(blue), 4→15(white)
-int dragonBallColor[5];     //0빨 1노 2초 3파 4흰 고정, 어차피 위치랜덤돌릴거니까 얘 순서는 상관ㄴㄴ
-COORD dragonBallPos[5];     //빨노초파흰 순서대로 위치 저장. 알맞은 색깔의 여의주를 먹으면 나머지들은 없애줘야하기때문..하..
+int moogiColor = 4;   //5∞°¡ˆ ªˆªÛ∏∏ ªÁøÎ. 0°Ê4(dark red), 1°Ê6(dark yellow), 2°Ê2(dark green), 3°Ê9(blue), 4°Ê15(white)
+int dragonBallColor[5];     //0ª° 1≥Î 2√  3∆ƒ 4»Ú ∞Ì¡§, æÓ¬˜«« ¿ßƒ°∑£¥˝µπ∏±∞≈¥œ±Ó æÍ º¯º≠¥¬ ªÛ∞¸§§§§
+COORD dragonBallPos[5];     //ª°≥Î√ ∆ƒ»Ú º¯º≠¥Î∑Œ ¿ßƒ° ¿˙¿Â. æÀ∏¬¿∫ ªˆ±Ú¿« ø©¿«¡÷∏¶ ∏‘¿∏∏È ≥™∏”¡ˆµÈ¿∫ æ¯æ÷¡‡æﬂ«œ±‚∂ßπÆ..«œ..
 
 int petGauge = 0;
+int petScore = 0;
 Pet* pet = NULL;
 time_t petCreationTime;
 
@@ -193,6 +198,12 @@ void setDragonBallPos();
 void showColorDragonBall(int x, int y, int color);
 void deleteDragonBall();
 
+void createFever();
+void getFever();
+int isFever();
+void fillFever();
+void removeFever();
+
 void printMatrix();
 
 int main()
@@ -237,7 +248,7 @@ void stage1()
         if (isGameOver()) break;
         while (1)
         {
-
+            
             if (moogiMove() == 0)
             {
                 break;
@@ -389,14 +400,14 @@ void gotoxycol(int x, int y, int col, char* s) {
 /*-----------------------------------------------------------------------------------------*/
 
 void introScreen() {
-    gotoxycol(6, 10, 14, "┏━━━┓┏┓┏┓┏┓━━━┏┓━━━━━┏┓━━━━━━┏━━━┓━━━━━━━━━━━━━━━━━━━━");
-    gotoxycol(6, 11, 14, "┃┏━┓┃┃┃┃┃┃┃━━┏┛┗┓━━━━┃┃━━━━━━┗┓┏┓┃━━━━━━━━━━━━━━━━━━━━");
-    gotoxycol(6, 12, 14, "┃┗━━┓┃┃┃┃┃┃┏┓┗┓┏┛┏━━┓┃┗━┓━━━━━┃┃┃┃┏━┓┏━━┓━┏━━┓┏━━┓┏━┓━");
-    gotoxycol(6, 13, 14, "┗━━┓┃┃┗┛┗┛┃┣┫━┃┃━┃┏━┛┃┏┓┃━━━━━┃┃┃┃┃┏┛┗━┓┃━┃┏┓┃┃┏┓┃┃┏┓┓");
-    gotoxycol(6, 14, 14, "┃┗━┛┃┗┓┏┓┏┛┃┃━┃┗┓┃┗━┓┃┃┃┃━━━━┏┛┗┛┃┃┃━┃┗┛┗┓┃┗┛┃┃┗┛┃┃┃┃┃");
-    gotoxycol(6, 15, 14, "┗━━━┛━┗┛┗┛━┗┛━┗━┛┗━━┛┗┛┗┛━━━━┗━━━┛┗┛━┗━━━┛┗━┓┃┗━━┛┗┛┗┛");
-    gotoxycol(6, 16, 14, "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┏━┛┃━━━━━━━━");
-    gotoxycol(6, 17, 14, "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┗━━┛━━━━━━━━");
+    gotoxycol(6, 10, 14, "¶Æ¶¨¶¨¶¨¶Ø¶Æ¶Ø¶Æ¶Ø¶Æ¶Ø¶¨¶¨¶¨¶Æ¶Ø¶¨¶¨¶¨¶¨¶¨¶Æ¶Ø¶¨¶¨¶¨¶¨¶¨¶¨¶Æ¶¨¶¨¶¨¶Ø¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨");
+    gotoxycol(6, 11, 14, "¶≠¶Æ¶¨¶Ø¶≠¶≠¶≠¶≠¶≠¶≠¶≠¶¨¶¨¶Æ¶∞¶±¶Ø¶¨¶¨¶¨¶¨¶≠¶≠¶¨¶¨¶¨¶¨¶¨¶¨¶±¶Ø¶Æ¶Ø¶≠¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨");
+    gotoxycol(6, 12, 14, "¶≠¶±¶¨¶¨¶Ø¶≠¶≠¶≠¶≠¶≠¶≠¶Æ¶Ø¶±¶Ø¶Æ¶∞¶Æ¶¨¶¨¶Ø¶≠¶±¶¨¶Ø¶¨¶¨¶¨¶¨¶¨¶≠¶≠¶≠¶≠¶Æ¶¨¶Ø¶Æ¶¨¶¨¶Ø¶¨¶Æ¶¨¶¨¶Ø¶Æ¶¨¶¨¶Ø¶Æ¶¨¶Ø¶¨");
+    gotoxycol(6, 13, 14, "¶±¶¨¶¨¶Ø¶≠¶≠¶±¶∞¶±¶∞¶≠¶≤¶¥¶¨¶≠¶≠¶¨¶≠¶Æ¶¨¶∞¶≠¶Æ¶Ø¶≠¶¨¶¨¶¨¶¨¶¨¶≠¶≠¶≠¶≠¶≠¶Æ¶∞¶±¶¨¶Ø¶≠¶¨¶≠¶Æ¶Ø¶≠¶≠¶Æ¶Ø¶≠¶≠¶Æ¶Ø¶Ø");
+    gotoxycol(6, 14, 14, "¶≠¶±¶¨¶∞¶≠¶±¶Ø¶Æ¶Ø¶Æ¶∞¶≠¶≠¶¨¶≠¶±¶Ø¶≠¶±¶¨¶Ø¶≠¶≠¶≠¶≠¶¨¶¨¶¨¶¨¶Æ¶∞¶±¶∞¶≠¶≠¶≠¶¨¶≠¶±¶∞¶±¶Ø¶≠¶±¶∞¶≠¶≠¶±¶∞¶≠¶≠¶≠¶≠¶≠");
+    gotoxycol(6, 15, 14, "¶±¶¨¶¨¶¨¶∞¶¨¶±¶∞¶±¶∞¶¨¶±¶∞¶¨¶±¶¨¶∞¶±¶¨¶¨¶∞¶±¶∞¶±¶∞¶¨¶¨¶¨¶¨¶±¶¨¶¨¶¨¶∞¶±¶∞¶¨¶±¶¨¶¨¶¨¶∞¶±¶¨¶Ø¶≠¶±¶¨¶¨¶∞¶±¶∞¶±¶∞");
+    gotoxycol(6, 16, 14, "¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶Æ¶¨¶∞¶≠¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨");
+    gotoxycol(6, 17, 14, "¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶±¶¨¶¨¶∞¶¨¶¨¶¨¶¨¶¨¶¨¶¨¶¨");
 
     while (1) {
         if (kbhit()) break;
@@ -411,12 +422,12 @@ void introScreen() {
 }
 
 void selectStage() {
-    gotoxycol(46, 8, 14, "▶ Press stage number to play: ");
-    gotoxycol(50, 11, 14, "┏Stage 1: Classic");
-    gotoxycol(50, 13, 14, "┏Stage 2: Off The Wall");
-    gotoxycol(50, 15, 14, "┏Stage 3: 이무지개");
-    gotoxycol(50, 17, 14, "┏Stage 4: 순간이무기동");
-    gotoxycol(50, 19, 14, "┏Stage 5: 반짝이무기");
+    gotoxycol(46, 8, 14, "¢∫ Press stage number to play: ");
+    gotoxycol(50, 11, 14, "¶ÆStage 1: Classic");
+    gotoxycol(50, 13, 14, "¶ÆStage 2: Off The Wall");
+    gotoxycol(50, 15, 14, "¶ÆStage 3: ¿Ãπ´¡ˆ∞≥");
+    gotoxycol(50, 17, 14, "¶ÆStage 4: º¯∞£¿Ãπ´±‚µø");
+    gotoxycol(50, 19, 14, "¶ÆStage 5: π›¬¶¿Ãπ´±‚");
 
     while (1) {
         if (_kbhit()) {
@@ -426,56 +437,56 @@ void selectStage() {
             stage -= '0';
             switch (stage) {
             case 1: {
-                gotoxycol(49, 11, 2, "▶ ┏Stage 1: Classic");
+                gotoxycol(49, 11, 2, "¢∫ ¶ÆStage 1: Classic");
                 Sleep(600);
                 for (int i = 0; i < 7; i++) {
-                    gotoxycol(49, 11, 2, "▶ ┏Stage 1: Classic");
+                    gotoxycol(49, 11, 2, "¢∫ ¶ÆStage 1: Classic");
                     Sleep(100);
-                    gotoxycol(49, 11, 15, "▶ ┏Stage 1: Classic");
+                    gotoxycol(49, 11, 15, "¢∫ ¶ÆStage 1: Classic");
                     Sleep(100);
                 }
                 break;
             }
             case 2: {
-                gotoxycol(50, 13, 2, "▶ ┏Stage 2: Off The Wall");
+                gotoxycol(50, 13, 2, "¢∫ ¶ÆStage 2: Off The Wall");
                 Sleep(600);
                 for (int i = 0; i < 7; i++) {
-                    gotoxycol(50, 13, 2, "▶ ┏Stage 2: Off The Wall");
+                    gotoxycol(50, 13, 2, "¢∫ ¶ÆStage 2: Off The Wall");
                     Sleep(100);
-                    gotoxycol(50, 13, 15, "▶ ┏Stage 2: Off The Wall");
+                    gotoxycol(50, 13, 15, "¢∫ ¶ÆStage 2: Off The Wall");
                     Sleep(100);
                 }
                 break;
             }
             case 3: {
-                gotoxycol(50, 15, 2, "▶ ┏Stage 3: 이무지개");
+                gotoxycol(50, 15, 2, "¢∫ ¶ÆStage 3: ¿Ãπ´¡ˆ∞≥");
                 Sleep(600);
                 for (int i = 0; i < 7; i++) {
-                    gotoxycol(50, 15, 2, "▶ ┏Stage 3: 이무지개");
+                    gotoxycol(50, 15, 2, "¢∫ ¶ÆStage 3: ¿Ãπ´¡ˆ∞≥");
                     Sleep(100);
-                    gotoxycol(50, 15, 15, "▶ ┏Stage 3: 이무지개");
+                    gotoxycol(50, 15, 15, "¢∫ ¶ÆStage 3: ¿Ãπ´¡ˆ∞≥");
                     Sleep(100);
                 }
                 break;
             }
             case 4: {
-                gotoxycol(50, 17, 2, "▶ ┏Stage 4: 순간이무기동");
+                gotoxycol(50, 17, 2, "¢∫ ¶ÆStage 4: º¯∞£¿Ãπ´±‚µø");
                 Sleep(600);
                 for (int i = 0; i < 7; i++) {
-                    gotoxycol(50, 17, 2, "▶ ┏Stage 4: 순간이무기동");
+                    gotoxycol(50, 17, 2, "¢∫ ¶ÆStage 4: º¯∞£¿Ãπ´±‚µø");
                     Sleep(100);
-                    gotoxycol(50, 17, 15, "▶ ┏Stage 4: 순간이무기동");
+                    gotoxycol(50, 17, 15, "¢∫ ¶ÆStage 4: º¯∞£¿Ãπ´±‚µø");
                     Sleep(100);
                 }
                 break;
             }
             case 5: {
-                gotoxycol(50, 19, 14, "▶ ┏Stage 5: 반짝이무기");
+                gotoxycol(50, 19, 14, "¢∫ ¶ÆStage 5: π›¬¶¿Ãπ´±‚");
                 Sleep(600);
                 for (int i = 0; i < 7; i++) {
-                    gotoxycol(50, 19, 2, "▶ ┏Stage 5: 반짝이무기");
+                    gotoxycol(50, 19, 2, "¢∫ ¶ÆStage 5: π›¬¶¿Ãπ´±‚");
                     Sleep(100);
-                    gotoxycol(50, 19, 15, "▶ ┏Stage 5: 반짝이무기");
+                    gotoxycol(50, 19, 15, "¢∫ ¶ÆStage 5: π›¬¶¿Ãπ´±‚");
                     Sleep(100);
                 }
                 break;
@@ -506,17 +517,17 @@ void drawBoard() {
     initGameBoardInfo();
     // draw game board
     for (int y = 0; y <= GBOARD_HEIGHT; y++) {
-        if (y == 0) gotoxycol(GBOARD_ORIGIN_X, GBOARD_ORIGIN_Y + y, 14, "▧");
-        else if (y == GBOARD_HEIGHT) gotoxycol(GBOARD_ORIGIN_X, GBOARD_ORIGIN_Y + y, 14, "▧");
-        else gotoxycol(GBOARD_ORIGIN_X, GBOARD_ORIGIN_Y + y, 14, "▧");
+        if (y == 0) gotoxycol(GBOARD_ORIGIN_X, GBOARD_ORIGIN_Y + y, 14, "¢ ");
+        else if (y == GBOARD_HEIGHT) gotoxycol(GBOARD_ORIGIN_X, GBOARD_ORIGIN_Y + y, 14, "¢ ");
+        else gotoxycol(GBOARD_ORIGIN_X, GBOARD_ORIGIN_Y + y, 14, "¢ ");
 
-        if (y == 0) gotoxycol(GBOARD_ORIGIN_X + (GBOARD_WIDTH + 1) * 2, GBOARD_ORIGIN_Y + y, 14, "▧");
-        else if (y == GBOARD_HEIGHT) gotoxycol(GBOARD_ORIGIN_X + (GBOARD_WIDTH + 1) * 2, GBOARD_ORIGIN_Y + y, 14, "▧");
-        else gotoxycol(GBOARD_ORIGIN_X + (GBOARD_WIDTH + 1) * 2, GBOARD_ORIGIN_Y + y, 14, "▧");
+        if (y == 0) gotoxycol(GBOARD_ORIGIN_X + (GBOARD_WIDTH + 1) * 2, GBOARD_ORIGIN_Y + y, 14, "¢ ");
+        else if (y == GBOARD_HEIGHT) gotoxycol(GBOARD_ORIGIN_X + (GBOARD_WIDTH + 1) * 2, GBOARD_ORIGIN_Y + y, 14, "¢ ");
+        else gotoxycol(GBOARD_ORIGIN_X + (GBOARD_WIDTH + 1) * 2, GBOARD_ORIGIN_Y + y, 14, "¢ ");
     }
     for (int x = 1; x < GBOARD_WIDTH + 1; x++) {
-        gotoxycol(GBOARD_ORIGIN_X + x * 2, GBOARD_ORIGIN_Y, 14, "▧");
-        gotoxycol(GBOARD_ORIGIN_X + x * 2, GBOARD_ORIGIN_Y + GBOARD_HEIGHT, 14, "▧");
+        gotoxycol(GBOARD_ORIGIN_X + x * 2, GBOARD_ORIGIN_Y, 14, "¢ ");
+        gotoxycol(GBOARD_ORIGIN_X + x * 2, GBOARD_ORIGIN_Y + GBOARD_HEIGHT, 14, "¢ ");
     }
     // print ultimate
     drawUlt();
@@ -532,37 +543,37 @@ void drawBoard() {
 void drawUlt() {
     // draw ultimate board
     for (int y = 0; y <= UBOARD_HEIGHT; y++) {
-        if (y == 0) gotoxycol(UBOARD_ORIGIN_X, UBOARD_ORIGIN_Y + y, 14, "┏");
-        else if (y == UBOARD_HEIGHT) gotoxycol(UBOARD_ORIGIN_X, UBOARD_ORIGIN_Y + y, 14, "┗");
-        else gotoxycol(UBOARD_ORIGIN_X, UBOARD_ORIGIN_Y + y, 14, "┃");
+        if (y == 0) gotoxycol(UBOARD_ORIGIN_X, UBOARD_ORIGIN_Y + y, 14, "¶Æ");
+        else if (y == UBOARD_HEIGHT) gotoxycol(UBOARD_ORIGIN_X, UBOARD_ORIGIN_Y + y, 14, "¶±");
+        else gotoxycol(UBOARD_ORIGIN_X, UBOARD_ORIGIN_Y + y, 14, "¶≠");
 
-        if (y == 0) gotoxycol(UBOARD_ORIGIN_X + (UBOARD_WIDTH + 1) * 2, UBOARD_ORIGIN_Y + y, 14, "┓");
-        else if (y == UBOARD_HEIGHT) gotoxycol(UBOARD_ORIGIN_X + (UBOARD_WIDTH + 1) * 2, UBOARD_ORIGIN_Y + y, 14, "┛");
-        else gotoxycol(UBOARD_ORIGIN_X + (UBOARD_WIDTH + 1) * 2, UBOARD_ORIGIN_Y + y, 14, "┃");
+        if (y == 0) gotoxycol(UBOARD_ORIGIN_X + (UBOARD_WIDTH + 1) * 2, UBOARD_ORIGIN_Y + y, 14, "¶Ø");
+        else if (y == UBOARD_HEIGHT) gotoxycol(UBOARD_ORIGIN_X + (UBOARD_WIDTH + 1) * 2, UBOARD_ORIGIN_Y + y, 14, "¶∞");
+        else gotoxycol(UBOARD_ORIGIN_X + (UBOARD_WIDTH + 1) * 2, UBOARD_ORIGIN_Y + y, 14, "¶≠");
     }
     for (int x = 1; x < UBOARD_WIDTH + 1; x++) {
-        gotoxycol(UBOARD_ORIGIN_X + x * 2, UBOARD_ORIGIN_Y, 14, "━");
-        gotoxycol(UBOARD_ORIGIN_X + x * 2, UBOARD_ORIGIN_Y + UBOARD_HEIGHT, 14, "━");
+        gotoxycol(UBOARD_ORIGIN_X + x * 2, UBOARD_ORIGIN_Y, 14, "¶¨");
+        gotoxycol(UBOARD_ORIGIN_X + x * 2, UBOARD_ORIGIN_Y + UBOARD_HEIGHT, 14, "¶¨");
     }
     // print ult
     gotoxycol(15, 25, 15, "ULT:");
-    gotoxycol(19, 25, 15, "□□□□□");
+    gotoxycol(19, 25, 15, "°‡°‡°‡°‡°‡");
 }
 
 void drawFever() {
     // draw fever board
     for (int y = 0; y <= FBOARD_HEIGHT; y++) {
-        if (y == 0) gotoxycol(FBOARD_ORIGIN_X, FBOARD_ORIGIN_Y + y, 14, "┏");
-        else if (y == FBOARD_HEIGHT) gotoxycol(FBOARD_ORIGIN_X, FBOARD_ORIGIN_Y + y, 14, "┗");
-        else gotoxycol(FBOARD_ORIGIN_X, FBOARD_ORIGIN_Y + y, 14, "┃");
+        if (y == 0) gotoxycol(FBOARD_ORIGIN_X, FBOARD_ORIGIN_Y + y, 14, "¶Æ");
+        else if (y == FBOARD_HEIGHT) gotoxycol(FBOARD_ORIGIN_X, FBOARD_ORIGIN_Y + y, 14, "¶±");
+        else gotoxycol(FBOARD_ORIGIN_X, FBOARD_ORIGIN_Y + y, 14, "¶≠");
 
-        if (y == 0) gotoxycol(FBOARD_ORIGIN_X + (FBOARD_WIDTH + 1) * 2, FBOARD_ORIGIN_Y + y, 14, "┓");
-        else if (y == FBOARD_HEIGHT) gotoxycol(FBOARD_ORIGIN_X + (FBOARD_WIDTH + 1) * 2, FBOARD_ORIGIN_Y + y, 14, "┛");
-        else gotoxycol(FBOARD_ORIGIN_X + (FBOARD_WIDTH + 1) * 2, FBOARD_ORIGIN_Y + y, 14, "┃");
+        if (y == 0) gotoxycol(FBOARD_ORIGIN_X + (FBOARD_WIDTH + 1) * 2, FBOARD_ORIGIN_Y + y, 14, "¶Ø");
+        else if (y == FBOARD_HEIGHT) gotoxycol(FBOARD_ORIGIN_X + (FBOARD_WIDTH + 1) * 2, FBOARD_ORIGIN_Y + y, 14, "¶∞");
+        else gotoxycol(FBOARD_ORIGIN_X + (FBOARD_WIDTH + 1) * 2, FBOARD_ORIGIN_Y + y, 14, "¶≠");
     }
     for (int x = 1; x < FBOARD_WIDTH + 1; x++) {
-        gotoxycol(FBOARD_ORIGIN_X + x * 2, FBOARD_ORIGIN_Y, 14, "━");
-        gotoxycol(FBOARD_ORIGIN_X + x * 2, FBOARD_ORIGIN_Y + FBOARD_HEIGHT, 14, "━");
+        gotoxycol(FBOARD_ORIGIN_X + x * 2, FBOARD_ORIGIN_Y, 14, "¶¨");
+        gotoxycol(FBOARD_ORIGIN_X + x * 2, FBOARD_ORIGIN_Y + FBOARD_HEIGHT, 14, "¶¨");
     }
     // print fever
     gotoxycol(56, 25, 15, "F  E  V  E  R");
@@ -572,9 +583,9 @@ void printStage() {
     switch (stage) {
     case 1: gotoxycol(72, 5, 15, "Stage 1: Classic"); break;
     case 2: gotoxycol(72, 5, 15, "Stage 2: Off The Wall"); break;
-    case 3: gotoxycol(72, 5, 15, "Stage 3: 이무지개"); break;
-    case 4: gotoxycol(72, 5, 15, "Stage 4: 순간이무기동"); break;
-    case 5: gotoxycol(72, 5, 15, "Stage 5: 반짝이무기"); break;
+    case 3: gotoxycol(72, 5, 15, "Stage 3: ¿Ãπ´¡ˆ∞≥"); break;
+    case 4: gotoxycol(72, 5, 15, "Stage 4: º¯∞£¿Ãπ´±‚µø"); break;
+    case 5: gotoxycol(72, 5, 15, "Stage 5: π›¬¶¿Ãπ´±‚"); break;
     default: break;
     }
 }
@@ -596,48 +607,48 @@ void printScore() {
 void drawLife() {
     gotoxycol(72, 11, 15, "Life:");
     gotoxycol(78, 11, 12, "");
-    for (int i = 0; i < heart; i++) printf(" ♥");
-    for (int i = heart; i < 3; i++) printf(" ♡");
+    for (int i = 0; i < heart; i++) printf(" ¢æ");
+    for (int i = heart; i < 3; i++) printf(" ¢Ω");
 }
 
 void drawControls() {
     // draw fever board
     for (int y = 0; y <= CBOARD_HEIGHT; y++) {
-        if (y == 0) gotoxycol(CBOARD_ORIGIN_X, CBOARD_ORIGIN_Y + y, 14, "┏");
-        else if (y == CBOARD_HEIGHT) gotoxycol(CBOARD_ORIGIN_X, CBOARD_ORIGIN_Y + y, 14, "┗");
-        else gotoxycol(CBOARD_ORIGIN_X, CBOARD_ORIGIN_Y + y, 14, "┃");
+        if (y == 0) gotoxycol(CBOARD_ORIGIN_X, CBOARD_ORIGIN_Y + y, 14, "¶Æ");
+        else if (y == CBOARD_HEIGHT) gotoxycol(CBOARD_ORIGIN_X, CBOARD_ORIGIN_Y + y, 14, "¶±");
+        else gotoxycol(CBOARD_ORIGIN_X, CBOARD_ORIGIN_Y + y, 14, "¶≠");
 
-        if (y == 0) gotoxycol(CBOARD_ORIGIN_X + (CBOARD_WIDTH + 1) * 2, CBOARD_ORIGIN_Y + y, 14, "┓");
-        else if (y == CBOARD_HEIGHT) gotoxycol(CBOARD_ORIGIN_X + (CBOARD_WIDTH + 1) * 2, CBOARD_ORIGIN_Y + y, 14, "┛");
-        else gotoxycol(CBOARD_ORIGIN_X + (CBOARD_WIDTH + 1) * 2, CBOARD_ORIGIN_Y + y, 14, "┃");
+        if (y == 0) gotoxycol(CBOARD_ORIGIN_X + (CBOARD_WIDTH + 1) * 2, CBOARD_ORIGIN_Y + y, 14, "¶Ø");
+        else if (y == CBOARD_HEIGHT) gotoxycol(CBOARD_ORIGIN_X + (CBOARD_WIDTH + 1) * 2, CBOARD_ORIGIN_Y + y, 14, "¶∞");
+        else gotoxycol(CBOARD_ORIGIN_X + (CBOARD_WIDTH + 1) * 2, CBOARD_ORIGIN_Y + y, 14, "¶≠");
     }
     for (int x = 1; x < CBOARD_WIDTH + 1; x++) {
-        gotoxycol(CBOARD_ORIGIN_X + x * 2, CBOARD_ORIGIN_Y, 14, "━");
-        gotoxycol(CBOARD_ORIGIN_X + x * 2, CBOARD_ORIGIN_Y + CBOARD_HEIGHT, 14, "━");
+        gotoxycol(CBOARD_ORIGIN_X + x * 2, CBOARD_ORIGIN_Y, 14, "¶¨");
+        gotoxycol(CBOARD_ORIGIN_X + x * 2, CBOARD_ORIGIN_Y + CBOARD_HEIGHT, 14, "¶¨");
     }
 }
 
 void drawKeys() {
     gotoxycol(77, 14, 14, "CONTROLS");
-    gotoxycol(80, 16, 7, "↑");
-    gotoxycol(78, 17, 7, "←  →");
-    gotoxycol(80, 18, 7, "↓");
+    gotoxycol(80, 16, 7, "°Ë");
+    gotoxycol(78, 17, 7, "°Á  °Ê");
+    gotoxycol(80, 18, 7, "°È");
     gotoxycol(73, 20, 7, "[R] to use ULT");
-    gotoxycol(73, 21, 7, "▶: [P] ∥: [S]");
+    gotoxycol(73, 21, 7, "¢∫: [P] °´: [S]");
 }
 
 void gameOver() {
     system("cls");
-    gotoxycol(38, 7, 12, "■■■■■  ■■■■■  ■■  ■■  ■■■■■");
-    gotoxycol(38, 8, 12, "■          ■      ■  ■  ■  ■  ■");
-    gotoxycol(38, 9, 12, "■  ■■■  ■■■■■  ■  ■  ■  ■■■■■");
-    gotoxycol(38, 10, 12, "■      ■  ■      ■  ■      ■  ■");
-    gotoxycol(38, 11, 12, "■■■■■  ■      ■  ■      ■  ■■■■■");
-    gotoxycol(38, 13, 12, "■■■■■  ■      ■  ■■■■■  ■■■■");
-    gotoxycol(38, 14, 12, "■      ■  ■      ■  ■          ■      ■");
-    gotoxycol(38, 15, 12, "■      ■  ■      ■  ■■■■■  ■■■■");
-    gotoxycol(38, 16, 12, "■      ■    ■  ■    ■          ■      ■");
-    gotoxycol(38, 17, 12, "■■■■■      ■      ■■■■■  ■      ■");
+    gotoxycol(38, 7, 12, "°·°·°·°·°·  °·°·°·°·°·  °·°·  °·°·  °·°·°·°·°·");
+    gotoxycol(38, 8, 12, "°·          °·      °·  °·  °·  °·  °·");
+    gotoxycol(38, 9, 12, "°·  °·°·°·  °·°·°·°·°·  °·  °·  °·  °·°·°·°·°·");
+    gotoxycol(38, 10, 12, "°·      °·  °·      °·  °·      °·  °·");
+    gotoxycol(38, 11, 12, "°·°·°·°·°·  °·      °·  °·      °·  °·°·°·°·°·");
+    gotoxycol(38, 13, 12, "°·°·°·°·°·  °·      °·  °·°·°·°·°·  °·°·°·°·");
+    gotoxycol(38, 14, 12, "°·      °·  °·      °·  °·          °·      °·");
+    gotoxycol(38, 15, 12, "°·      °·  °·      °·  °·°·°·°·°·  °·°·°·°·");
+    gotoxycol(38, 16, 12, "°·      °·    °·  °·    °·          °·      °·");
+    gotoxycol(38, 17, 12, "°·°·°·°·°·      °·      °·°·°·°·°·  °·      °·");
 
     gotoxycol(58, 20, 15, "SCORE ");
     // print final score
@@ -694,12 +705,14 @@ void initMoogi() {
         changeMoogiColor();
         changeMoogiBodyColor();
     }
-    gotoxy(head->position.X, head->position.Y, "◎");
-    gotoxy(body->position.X, body->position.Y, "●");
-    gotoxy(tail->position.X, tail->position.Y, "●");
+    gotoxy(head->position.X, head->position.Y, "°›");
+    gotoxy(body->position.X, body->position.Y, "°‹");
+    gotoxy(tail->position.X, tail->position.Y, "°‹");
 }
 
 void addBody() {
+    if (isFever()) return;
+
     if (length + 1 > maxLength) return;
 
     length++;
@@ -726,7 +739,7 @@ void addBody() {
 
     if (!detectCollision(tail->position.X, tail->position.Y))
     {
-        gotoxy(tail->position.X, tail->position.Y, "●");
+        gotoxy(tail->position.X, tail->position.Y, "°‹");
 
         int arrX = (tail->position.X - GBOARD_ORIGIN_X) / 2;
         int arrY = tail->position.Y - GBOARD_ORIGIN_Y;
@@ -735,7 +748,7 @@ void addBody() {
 }
 
 void deleteBody() {
-    if (length > minLength) { // 최소길이보다 클 때만 실행
+    if (length > minLength) { // √÷º“±Ê¿Ã∫∏¥Ÿ ≈¨ ∂ß∏∏ Ω««‡
         eraseTail();
         length--;
     }
@@ -743,26 +756,28 @@ void deleteBody() {
 
 void speedUp() {
     speed -= 5;
-    if (speed < minSpeed) speed = minSpeed; // 최대 속도 리밋
+    if (speed < minSpeed) speed = minSpeed; // √÷¥Î º”µµ ∏Æπ‘
 }
 
 void speedDown() {
     speed += 5;
-    if (speed > maxSpeed) speed = maxSpeed; // 최소 속도 리밋
+    if (speed > maxSpeed) speed = maxSpeed; // √÷º“ º”µµ ∏Æπ‘
 }
 
 void createItem() {
-    if (itemCount != 0) return; // 아이템 생성 조건, 화면에 아이템이 있으면 생성하지 않음
+    if (isFever()) return;
+
+    if (itemCount != 0) return; // æ∆¿Ã≈€ ª˝º∫ ¡∂∞«, »≠∏Èø° æ∆¿Ã≈€¿Ã ¿÷¿∏∏È ª˝º∫«œ¡ˆ æ ¿Ω
     time(&itemCreationTime);
 
-    item->itemNo = rand() % 2 + 4; // 아이템 종류 2가지
+    item->itemNo = rand() % 2 + 4; // æ∆¿Ã≈€ ¡æ∑˘ 2∞°¡ˆ
     item->pos.X = rand() % GBOARD_WIDTH + GBOARD_ORIGIN_X;
     item->pos.Y = rand() % GBOARD_HEIGHT + GBOARD_ORIGIN_Y;
 
     do {
         item->pos.X = (rand() % GBOARD_WIDTH) + GBOARD_ORIGIN_X; if (item->pos.X % 2 == 1) item->pos.X++;
         item->pos.Y = (rand() % GBOARD_HEIGHT) + GBOARD_ORIGIN_Y;
-    } while (detectCollision(item->pos.X, item->pos.Y)); // 아무것도 없으면 0 반환됨
+    } while (detectCollision(item->pos.X, item->pos.Y)); // æ∆π´∞Õµµ æ¯¿∏∏È 0 π›»Øµ
 
     int arrX = (item->pos.X - GBOARD_ORIGIN_X) / 2;
     int arrY = (item->pos.Y - GBOARD_ORIGIN_Y);
@@ -771,12 +786,12 @@ void createItem() {
     switch (item->itemNo) {
     case 4:
         setTextColor(1);
-        gotoxy(item->pos.X, item->pos.Y, "▲"); break;
+        gotoxy(item->pos.X, item->pos.Y, "°„"); break;
     case 5:
         setTextColor(4);
-        gotoxy(item->pos.X, item->pos.Y, "▼"); break;
+        gotoxy(item->pos.X, item->pos.Y, "°Â"); break;
     default:
-        gotoxy(INFO_X, ITEM_Y, "아이템 생성에 실패함");
+        gotoxy(INFO_X, ITEM_Y, "æ∆¿Ã≈€ ª˝º∫ø° Ω«∆–«‘");
         break;
     }
 
@@ -785,7 +800,9 @@ void createItem() {
     setTextColor(15);
 }
 
-void deleteItem() { // 삭제만 처리 or 과정까지 처리
+void deleteItem() { // ªË¡¶∏∏ √≥∏Æ or ∞˙¡§±Ó¡ˆ √≥∏Æ
+    if (isFever()) return;
+
     time_t currentTime;
     time(&currentTime);
 
@@ -802,13 +819,13 @@ void deleteItem() { // 삭제만 처리 or 과정까지 처리
 }
 
 void getHeart() {
-    if (heart < 3) // 생명 개수 제한... 그렇게 많이 부딪히지 않음. 약간 재미 요소 down..
+    if (heart < 3) // ª˝∏Ì ∞≥ºˆ ¡¶«—... ±◊∑∏∞‘ ∏π¿Ã ∫Œµ˙»˜¡ˆ æ ¿Ω. æ‡∞£ ¿ÁπÃ ø‰º“ down..
         heart++;
 }
 
 void getPet() {
-    // 화면에 궁 표시
-    // press enter 궁 사용
+    // »≠∏Èø° ±√ «•Ω√
+    // press enter ±√ ªÁøÎ
 }
 
 void usePet() {
@@ -817,11 +834,11 @@ void usePet() {
     pet = (Pet*)malloc(sizeof(Pet));
     time(&petCreationTime);
 
-    // 현재 꼬리의 좌표, 좌표를 떼어서 아이템의 좌표로 이동(최단거리로)
+    // «ˆ¿Á ≤ø∏Æ¿« ¡¬«•, ¡¬«•∏¶ ∂ºæÓº≠ æ∆¿Ã≈€¿« ¡¬«•∑Œ ¿Ãµø(√÷¥‹∞≈∏Æ∑Œ)
     pet->pos.X = tail->position.X;
     pet->pos.Y = tail->position.Y;
     eraseTail();
-    gotoxy(pet->pos.X, pet->pos.Y, "⊙"); // 수정 : 확인용, 위치 확인 필요
+    gotoxy(pet->pos.X, pet->pos.Y, "¢¡"); // ºˆ¡§ : »Æ¿ŒøÎ, ¿ßƒ° »Æ¿Œ « ø‰
 
     int arrX = (pet->pos.X - GBOARD_ORIGIN_X) / 2;
     int arrY = pet->pos.Y - GBOARD_ORIGIN_Y;
@@ -830,6 +847,8 @@ void usePet() {
 
 void petMove()
 {
+    if (isFever()) return;
+
     time_t currentTime;
     time(&currentTime);
     if ((int)difftime(currentTime, petCreationTime) >= 15)
@@ -853,7 +872,7 @@ void petMove()
 
     int move = rand() % 2;
     COORD pos = { pet->pos.X, pet->pos.Y };
-
+    
     if (move) pos.Y += yPlus;
     else pos.X += xPlus;
 
@@ -862,7 +881,7 @@ void petMove()
         gotoxy(pet->pos.X, pet->pos.Y, "  ");
         pet->pos.X = pos.X;
         pet->pos.Y = pos.Y;
-        gotoxycol(pet->pos.X, pet->pos.Y, 2, "⊙");
+        gotoxycol(pet->pos.X, pet->pos.Y, 2, "¢¡");
         setTextColor(15);
 
         getItemOfPet();
@@ -878,7 +897,7 @@ void petMove()
 
         gotoxycol(19, 25, 2, "");
         setTextColor(15);
-        for (int i = 0; i < 5; i++) printf("□");
+        for (int i = 0; i < 5; i++) printf("°‡");
 
         addBody();
 
@@ -913,7 +932,7 @@ void petMove()
 
     pet->pos.X = pos.X;
     pet->pos.Y = pos.Y;
-    gotoxycol(pet->pos.X, pet->pos.Y, 2, "⊙");
+    gotoxycol(pet->pos.X, pet->pos.Y, 2, "¢¡");
     setTextColor(15);
 
     arrX = (pet->pos.X - GBOARD_ORIGIN_X) / 2;
@@ -924,35 +943,35 @@ void petMove()
 void getItemOfPet()
 {
     itemCount--;
-    if (item->itemNo == 4) {    //좋은아이템(길이↓, 속도↓, FEVER, 실드, 여의주생성)
-        //int itemType = (rand() % 5) + 1;//(rand() % 5) + 1; 원래 이건데 지금은 아이템 2개만
+    if (item->itemNo == 4) {    //¡¡¿∫æ∆¿Ã≈€(±Ê¿Ã°È, º”µµ°È, FEVER, Ω«µÂ, ø©¿«¡÷ª˝º∫)
+        //int itemType = (rand() % 5) + 1;//(rand() % 5) + 1; ø¯∑° ¿Ã∞«µ• ¡ˆ±›¿∫ æ∆¿Ã≈€ 2∞≥∏∏
         int itemType = 4;
 
         switch (itemType) {
-        case 1:        //길이↓
+        case 1:        //±Ê¿Ã°È
             deleteBody();
             gotoxy(INFO_X, ITEM_Y, "                  ");
-            gotoxy(INFO_X, ITEM_Y, "길이 감소!");
+            gotoxy(INFO_X, ITEM_Y, "±Ê¿Ã ∞®º“!");
             break;
-        case 2:        //속도↓
+        case 2:        //º”µµ°È
             speedDown();
             gotoxy(INFO_X, ITEM_Y, "                  ");
-            gotoxy(INFO_X, ITEM_Y, "속도 감소!");
+            gotoxy(INFO_X, ITEM_Y, "º”µµ ∞®º“!");
             break;
         case 3:
             getHeart();
             gotoxy(INFO_X, ITEM_Y, "                  ");
-            gotoxy(INFO_X, ITEM_Y, "생명 +1"); // 수정 : 멘트, 이전 멘트를 지워야 할 거 같음
+            gotoxy(INFO_X, ITEM_Y, "ª˝∏Ì +1"); // ºˆ¡§ : ∏‡∆Æ, ¿Ã¿¸ ∏‡∆Æ∏¶ ¡ˆøˆæﬂ «“ ∞≈ ∞∞¿Ω
             break;
         case 4:
             dragonBallBomb();
             gotoxy(INFO_X, ITEM_Y, "                  ");
-            gotoxy(INFO_X, ITEM_Y, "여의주 폭탄"); // 수정 : 멘트
+            gotoxy(INFO_X, ITEM_Y, "ø©¿«¡÷ ∆¯≈∫"); // ºˆ¡§ : ∏‡∆Æ
             break;
         case 5:
             //getPet();
             gotoxy(INFO_X, ITEM_Y, "                  ");
-            gotoxy(INFO_X, ITEM_Y, "펫 획득"); // 수정 : 멘트
+            gotoxy(INFO_X, ITEM_Y, "∆Í »πµÊ"); // ºˆ¡§ : ∏‡∆Æ
             break;
         default:
             gotoxy(INFO_X, ITEM_Y, "                  ");
@@ -962,19 +981,19 @@ void getItemOfPet()
 
         createItem();
     }
-    else if (item->itemNo == 5) {    //안좋은아이템 (길이↑, 속도↑)
+    else if (item->itemNo == 5) {    //æ»¡¡¿∫æ∆¿Ã≈€ (±Ê¿Ã°Ë, º”µµ°Ë)
         int itemType = (rand() % 2) + 1;
 
         switch (itemType) {
-        case 1:        //길이↑
+        case 1:        //±Ê¿Ã°Ë
             addBody();
             gotoxy(INFO_X, ITEM_Y, "                  ");
-            gotoxy(INFO_X, ITEM_Y, "길이 증가!");
+            gotoxy(INFO_X, ITEM_Y, "±Ê¿Ã ¡ı∞°!");
             break;
-        case 2:        //속도↑
+        case 2:        //º”µµ°Ë
             speedUp();
             gotoxy(INFO_X, ITEM_Y, "                  ");
-            gotoxy(INFO_X, ITEM_Y, "속도 증가!");
+            gotoxy(INFO_X, ITEM_Y, "º”µµ ¡ı∞°!");
             break;
         default:
             gotoxy(INFO_X, ITEM_Y, "                  ");
@@ -987,6 +1006,7 @@ void getItemOfPet()
 }
 
 void dragonBallBomb() {
+    if (stage == 3) return;
     int multipleDragonBall = rand() % 3 + 2; // 2~4
     for (int i = 0; i < multipleDragonBall; i++) {
         addDragonBall();
@@ -994,10 +1014,12 @@ void dragonBallBomb() {
 }
 
 void moogiSwitch() {
+    if (isFever()) return;
+
     Moogi* p = tail, * pp = p;
     Moogi* pH = NULL, * pT = NULL;
     Moogi* pi = NULL, * pii = NULL;
-
+    
     while (p != NULL)
     {
         if (pii != NULL)
@@ -1036,15 +1058,15 @@ void moogiSwitch() {
         free(pp);
     }
     pT = pii;
-
+    
     head = pH;
     tail = pT;
 
-    gotoxy(head->position.X, head->position.Y, "◎");
+    gotoxy(head->position.X, head->position.Y, "°›");
     Moogi* tmp = head->back;
-    while (tmp != NULL)
+    while(tmp!=NULL)
     {
-        gotoxy(tmp->position.X, tmp->position.Y, "●");
+        gotoxy(tmp->position.X, tmp->position.Y, "°‹");
         tmp = tmp->back;
     }
 
@@ -1069,8 +1091,8 @@ void moogiSwitch() {
 
 /*----------------------------------------------------------------------------------------------*/
 
-void inPlayKeyInput() // 플레이 중의 키 입력
-// 이무기 조작 및 일시중지
+void inPlayKeyInput() // «√∑π¿Ã ¡ﬂ¿« ≈∞ ¿‘∑¬
+// ¿Ãπ´±‚ ¡∂¿€ π◊ ¿œΩ√¡ﬂ¡ˆ
 {
     int i, key; // , isDone = 0;
 
@@ -1105,25 +1127,25 @@ void inPlayKeyInput() // 플레이 중의 키 입력
 
         }
 
-        Sleep(15); // 플레이 속도 조절
+        Sleep(15); // «√∑π¿Ã º”µµ ¡∂¿˝
     }
 }
 
-void shiftUp() // 플레이 중 up 방향키 입력 시
+void shiftUp() // «√∑π¿Ã ¡ﬂ up πÊ«‚≈∞ ¿‘∑¬ Ω√
 {
-    // 충돌 확인, 적절치 못한 방향 전환인지 확인
+    // √Êµπ »Æ¿Œ, ¿˚¿˝ƒ° ∏¯«— πÊ«‚ ¿¸»Ø¿Œ¡ˆ »Æ¿Œ
     if (direction == 0 || direction == 1) return;
     COORD nextPos = nextHeadPos();
     if (detectCollision(nextPos.X, nextPos.Y) == 1)
         return;
 
-    // 방향 업데이트, 이동에 따라 head 및 tail만 redraw
+    // πÊ«‚ æ˜µ•¿Ã∆Æ, ¿Ãµøø° µ˚∂Û head π◊ tail∏∏ redraw
     direction = 0;
     drawHead(nextPos);
     eraseTail();
 }
 
-void shiftDown() // 플레이 중 down 방향키 입력 시
+void shiftDown() // «√∑π¿Ã ¡ﬂ down πÊ«‚≈∞ ¿‘∑¬ Ω√
 {
     if (direction == 0 || direction == 1) return;
     COORD nextPos = nextHeadPos();
@@ -1135,19 +1157,19 @@ void shiftDown() // 플레이 중 down 방향키 입력 시
     eraseTail();
 }
 
-void shiftLeft() // 플레이 중 left 방향키 입력 시
+void shiftLeft() // «√∑π¿Ã ¡ﬂ left πÊ«‚≈∞ ¿‘∑¬ Ω√
 {
     if (direction == 2 || direction == 3) return;
     COORD nextPos = nextHeadPos();
     if (detectCollision(nextPos.X, nextPos.Y) == 1)
         return;
-
+    
     direction = 2;
     drawHead(nextPos);
     eraseTail();
 }
 
-void shiftRight() // 플레이 중 right 방향키 입력 시
+void shiftRight() // «√∑π¿Ã ¡ﬂ right πÊ«‚≈∞ ¿‘∑¬ Ω√
 {
     if (direction == 2 || direction == 3) return;
     COORD nextPos = nextHeadPos();
@@ -1159,11 +1181,11 @@ void shiftRight() // 플레이 중 right 방향키 입력 시
     eraseTail();
 }
 
-void pausePlay() // 일시정지 -> 재시작 혹은 리셋을 기다림
-// 화면이 어떻게 구성되는지 몰라서
-// 일단 아래쪽 방향키 누르면 홈화면으로 돌아가기
-// 위쪽 방향키 누르면 그냥 이어서 게임 진행
-// 스페이스 누르면 선택 확정으로 해놨음
+void pausePlay() // ¿œΩ√¡§¡ˆ -> ¿ÁΩ√¿€ »§¿∫ ∏Æº¬¿ª ±‚¥Ÿ∏≤
+// »≠∏È¿Ã æÓ∂ª∞‘ ±∏º∫µ«¥¬¡ˆ ∏Ù∂Ûº≠
+// ¿œ¥‹ æ∆∑°¬  πÊ«‚≈∞ ¥©∏£∏È »®»≠∏È¿∏∑Œ µπæ∆∞°±‚
+// ¿ß¬  πÊ«‚≈∞ ¥©∏£∏È ±◊≥… ¿ÃæÓº≠ ∞‘¿” ¡¯«‡
+// Ω∫∆‰¿ÃΩ∫ ¥©∏£∏È º±≈√ »Æ¡§¿∏∑Œ «ÿ≥˘¿Ω
 {
     while (1)
     {
@@ -1177,10 +1199,10 @@ void pausePlay() // 일시정지 -> 재시작 혹은 리셋을 기다림
     }
 }
 
-int detectCollision(int posX, int posY) // 충돌 감지
-// 이 함수의 입력 인자로 이무기 머리 위치를 넣어주면 됨
-// 충돌 감지하고 싶으면 direction에 따라 한칸 움직인 위치
-// 그냥 nextHeadPos() 값을 넣어주면 됨
+int detectCollision(int posX, int posY) // √Êµπ ∞®¡ˆ
+// ¿Ã «‘ºˆ¿« ¿‘∑¬ ¿Œ¿⁄∑Œ ¿Ãπ´±‚ ∏”∏Æ ¿ßƒ°∏¶ ≥÷æÓ¡÷∏È µ
+// √Êµπ ∞®¡ˆ«œ∞Ì ΩÕ¿∏∏È directionø° µ˚∂Û «—ƒ≠ øÚ¡˜¿Œ ¿ßƒ°
+// ±◊≥… nextHeadPos() ∞™¿ª ≥÷æÓ¡÷∏È µ
 {
     int arrX = (posX - GBOARD_ORIGIN_X) / 2;
     int arrY = (posY - GBOARD_ORIGIN_Y);
@@ -1188,7 +1210,7 @@ int detectCollision(int posX, int posY) // 충돌 감지
     return gameBoardInfo[arrY][arrX];
 }
 
-COORD nextHeadPos() // head의 다음 위치 반환
+COORD nextHeadPos() // head¿« ¥Ÿ¿Ω ¿ßƒ° π›»Ø
 {
     COORD curPos;
     curPos.X = head->position.X;
@@ -1215,9 +1237,9 @@ COORD nextHeadPos() // head의 다음 위치 반환
     return curPos;
 }
 
-void drawHead(COORD headPos) // 이무기의 이동을 출력(head)
-// 이무기 연결리스트 앞에 노드 하나 추가하고
-// 머리랑 그 바로 뒤 한 칸(이전 위치에 출력된 머리◎를 지우기 위해)을 출력
+void drawHead(COORD headPos) // ¿Ãπ´±‚¿« ¿Ãµø¿ª √‚∑¬(head)
+// ¿Ãπ´±‚ ø¨∞·∏ÆΩ∫∆Æ æ’ø° ≥ÎµÂ «œ≥™ √ﬂ∞°«œ∞Ì
+// ∏”∏Æ∂˚ ±◊ πŸ∑Œ µ⁄ «— ƒ≠(¿Ã¿¸ ¿ßƒ°ø° √‚∑¬µ» ∏”∏Æ°›∏¶ ¡ˆøÏ±‚ ¿ß«ÿ)¿ª √‚∑¬
 {
     Moogi* node = getNode(NULL, head, headPos);
     head->front = node;
@@ -1245,9 +1267,9 @@ void drawHead(COORD headPos) // 이무기의 이동을 출력(head)
     if (stage == 3) {
         setTextColor_rygbw(moogiColor);
     }
-
-    gotoxy(head->position.X, head->position.Y, "◎");
-    gotoxy(head->back->position.X, head->back->position.Y, "●");
+    
+    gotoxy(head->position.X, head->position.Y, "°›");
+    gotoxy(head->back->position.X, head->back->position.Y, "°‹");
 
     getSomething();
 
@@ -1256,12 +1278,12 @@ void drawHead(COORD headPos) // 이무기의 이동을 출력(head)
     gameBoardInfo[arrY][arrX] = 2;
 }
 
-void eraseTail() // 이무기의 이동을 출력(tail)
-// 꼬리를 한 칸 앞으로 이동시키고 마지막 노드를 삭제(drawHead에서 하나 추가하니까 length는 똑같음)
-// 그리고 지나간 자리에 남은 출력을 공백문자로 지움
+void eraseTail() // ¿Ãπ´±‚¿« ¿Ãµø¿ª √‚∑¬(tail)
+// ≤ø∏Æ∏¶ «— ƒ≠ æ’¿∏∑Œ ¿ÃµøΩ√≈∞∞Ì ∏∂¡ˆ∏∑ ≥ÎµÂ∏¶ ªË¡¶(drawHeadø°º≠ «œ≥™ √ﬂ∞°«œ¥œ±Ó length¥¬ ∂»∞∞¿Ω)
+// ±◊∏Æ∞Ì ¡ˆ≥™∞£ ¿⁄∏Æø° ≥≤¿∫ √‚∑¬¿ª ∞¯πÈπÆ¿⁄∑Œ ¡ˆøÚ
 {
     if (tail == NULL) return;
-
+    
     if (detectCollision(tail->position.X, tail->position.Y) == 2)
     {
         int arrX = (tail->position.X - GBOARD_ORIGIN_X) / 2;
@@ -1270,14 +1292,14 @@ void eraseTail() // 이무기의 이동을 출력(tail)
 
         gotoxy(tail->position.X, tail->position.Y, "  ");
     }
-
+    
     Moogi* pi = tail;
     tail = tail->front;
     tail->back = NULL;
     free(pi);
 }
 
-Moogi* getNode(Moogi* front, Moogi* back, COORD position) // 이무기 노드 하나 생성
+Moogi* getNode(Moogi* front, Moogi* back, COORD position) // ¿Ãπ´±‚ ≥ÎµÂ «œ≥™ ª˝º∫
 {
     Moogi* node = (Moogi*)malloc(sizeof(Moogi));
     node->front = front;
@@ -1292,7 +1314,7 @@ int moogiMove()
     COORD nextPos = nextHeadPos();
     if (detectCollision(nextPos.X, nextPos.Y) == 1 || detectCollision(nextPos.X, nextPos.Y) == 2)
     {
-        if (heart > 0) { // 목숨 남았을 때
+        if (heart > 1) { // ∏Òº˚ ≥≤æ“¿ª ∂ß
             waitToRecover();
             return 1;
         }
@@ -1302,12 +1324,22 @@ int moogiMove()
 
     if (detectCollision(nextPos.X, nextPos.Y) != 13)
     {
-        drawHead(nextPos);      //얘가 getSomething 부름, getSomething이 countScore랑 getItem 부름,
+        drawHead(nextPos);      //æÍ∞° getSomething ∫Œ∏ß, getSomething¿Ã countScore∂˚ getItem ∫Œ∏ß,
         eraseTail();
     }
-
+    
     if (stage == 2) wallMove();
     if (pet != NULL) petMove();
+
+    if (isFever())
+    {
+        fillFever();
+        time_t currentFeverTime;
+        time(&currentFeverTime);
+
+        if ((int)difftime(currentFeverTime, ferverStartTime) >= 7)
+            removeFever();
+    }
 
     return 1;
 }
@@ -1317,10 +1349,13 @@ void getSomething()
     deleteItem();
     countScore();
     getItem();
+    getFever();
 }
 
 void wallMove()
 {
+    if (isFever()) return;
+
     Wall* p = wallHead;
 
     while (p->next != NULL)
@@ -1328,6 +1363,8 @@ void wallMove()
         p = p->next;
 
         COORD pos = { p->position.X, p->position.Y };
+
+        int cantMove = 4;
 
         while (1)
         {
@@ -1355,7 +1392,12 @@ void wallMove()
             if (!detectCollision(pos.X, pos.Y)) break;
 
             p->direct = rand() % 4;
+            cantMove--;
+
+            if (!cantMove) break;
         }
+
+        if (!cantMove) continue;
 
         int arrX = (p->position.X - GBOARD_ORIGIN_X) / 2;
         int arrY = (p->position.Y - GBOARD_ORIGIN_Y);
@@ -1367,7 +1409,7 @@ void wallMove()
 
         setTextColor(14);
         gotoxy(p->position.X, p->position.Y, "  ");
-        gotoxy(pos.X, pos.Y, "▨");
+        gotoxy(pos.X, pos.Y, "¢…");
         setTextColor(15);
 
         p->position.X = pos.X;
@@ -1379,23 +1421,27 @@ void wallMove()
 
 void countScore() {
     if (detectCollision(head->position.X, head->position.Y) == 3) {
-        if (dragonBallCount > 0) // 개수가 음수가 되지 않게
+        if (dragonBallCount > 0) // ∞≥ºˆ∞° ¿Ωºˆ∞° µ«¡ˆ æ ∞‘
             dragonBallCount--;
         currentScore += 10;
-
-        gotoxycol(79, 9, 15, "");
-        printf("%d", currentScore);
-
-        if (currentScore > 0 && currentScore % 10 == 0)
+        
+        if (currentScore > 0 && currentScore > petScore)
         {
+            petScore += 10;
             petGauge++; if (petGauge > 5) petGauge = 5;
             gotoxycol(19, 25, 2, "");
-            for (int i = 0; i < petGauge; i++) printf("■");
+            for (int i = 0; i < petGauge; i++) printf("°·");
             setTextColor(15);
-            for (int i = petGauge; i < 5; i++) printf("□");
+            for (int i = petGauge; i < 5; i++) printf("°‡");
         }
 
-        if (stage < 4) // 스테이지 4, 5는 스위치 기능 off
+        if (currentScore > 0 && currentScore > feverScore)
+        {
+            feverScore += 20;
+            createFever();
+        }
+
+        if (stage < 4) // Ω∫≈◊¿Ã¡ˆ 4, 5¥¬ Ω∫¿ßƒ° ±‚¥… off
             moogiSwitch();
 
         addBody();
@@ -1406,14 +1452,20 @@ void countScore() {
             changeMoogiBodyColor();
         }
 
-        if (dragonBallCount == 0) { // 여의주가 많으면 추가로 생성하지 않음
+        if (dragonBallCount == 0) { // ø©¿«¡÷∞° ∏π¿∏∏È √ﬂ∞°∑Œ ª˝º∫«œ¡ˆ æ ¿Ω
             addDragonBall();
         }
         if (stage == 2) addWall();
     }
+    else if (detectCollision(head->position.X, head->position.Y) == 12) {
+        currentScore += 3;
+    }
+    gotoxy(79, 9, "");
+    setTextColor(15);
+    printf("%d", currentScore);
 }
 
-void getBestScore() {    //게임 시작 시 플레이 전에 반드시 불러야 한다...(1번만)
+void getBestScore() {    //∞‘¿” Ω√¿€ Ω√ «√∑π¿Ã ¿¸ø° π›µÂΩ√ ∫“∑Øæﬂ «—¥Ÿ...(1π¯∏∏)
     FILE* fp_r = fopen("BestScore.txt", "r");
     if (fp_r == NULL) {
         return;
@@ -1422,16 +1474,16 @@ void getBestScore() {    //게임 시작 시 플레이 전에 반드시 불러�
     for (int i = 0; i < 5; i++) {
         fscanf(fp_r, "%d", &stageBestScore[i]);
     }
-    fclose(fp_r);        //파일에서 최고점수 얻어옴 → 파일 비우고 stageBestScore배열에 저장
+    fclose(fp_r);        //∆ƒ¿œø°º≠ √÷∞Ì¡°ºˆ æÚæÓø» °Ê ∆ƒ¿œ ∫ÒøÏ∞Ì stageBestScoreπËø≠ø° ¿˙¿Â
 }
 
-void setBestScore(int score) {            //게임오버됐을때만 부르면 될 듯?
+void setBestScore(int score) {            //∞‘¿”ø¿πˆµ∆¿ª∂ß∏∏ ∫Œ∏£∏È µ… µÌ?
     if (score > stageBestScore[stage - 1]) {
         stageBestScore[stage - 1] = score;
     }
 }
 
-void saveBestScore() {    //게임 종료 시 다시 최고점수를 파일에 저장하는 역할
+void saveBestScore() {    //∞‘¿” ¡æ∑· Ω√ ¥ŸΩ√ √÷∞Ì¡°ºˆ∏¶ ∆ƒ¿œø° ¿˙¿Â«œ¥¬ ø™«“
     FILE* fp_w = fopen("BestScore.txt", "w");
     for (int i = 0; i < 5; i++) {
         fprintf(fp_w, "%d\n", stageBestScore[i]);
@@ -1439,7 +1491,7 @@ void saveBestScore() {    //게임 종료 시 다시 최고점수를 파일에 �
     fclose(fp_w);
 }
 
-int isGameOver() {        //리턴값이 1이나 2면 게임종료해야됨
+int isGameOver() {        //∏Æ≈œ∞™¿Ã 1¿Ã≥™ 2∏È ∞‘¿”¡æ∑·«ÿæﬂµ
     COORD nextPos = nextHeadPos();
     if (detectCollision(nextPos.X, nextPos.Y) == 1 || detectCollision(nextPos.X, nextPos.Y) == 2) {
         if (heart > 1)
@@ -1447,44 +1499,46 @@ int isGameOver() {        //리턴값이 1이나 2면 게임종료해야됨
             waitToRecover();
             return 0;
         }
-        return 1;        //박으면 1리턴
+        return 1;        //π⁄¿∏∏È 1∏Æ≈œ
     }
-    return 0;            //아니면 0
+    return 0;            //æ∆¥œ∏È 0
 }
 
 void getItem() {
+    if (isFever()) return;
+
     if (detectCollision(head->position.X, head->position.Y) == 4 || detectCollision(head->position.X, head->position.Y) == 5)
     {
         itemCount--;
-        if (item->itemNo == 4) {    //좋은아이템(길이↓, 속도↓, FEVER, 실드, 여의주생성)
-            //int itemType = (rand() % 5) + 1;//(rand() % 5) + 1; 원래 이건데 지금은 아이템 2개만
+        if (item->itemNo == 4) {    //¡¡¿∫æ∆¿Ã≈€(±Ê¿Ã°È, º”µµ°È, FEVER, Ω«µÂ, ø©¿«¡÷ª˝º∫)
+            //int itemType = (rand() % 5) + 1;//(rand() % 5) + 1; ø¯∑° ¿Ã∞«µ• ¡ˆ±›¿∫ æ∆¿Ã≈€ 2∞≥∏∏
             int itemType = 4;
 
             switch (itemType) {
-            case 1:        //길이↓
+            case 1:        //±Ê¿Ã°È
                 deleteBody();
                 gotoxy(INFO_X, ITEM_Y, "                  ");
-                gotoxy(INFO_X, ITEM_Y, "길이 감소!");
+                gotoxy(INFO_X, ITEM_Y, "±Ê¿Ã ∞®º“!");
                 break;
-            case 2:        //속도↓
+            case 2:        //º”µµ°È
                 speedDown();
                 gotoxy(INFO_X, ITEM_Y, "                  ");
-                gotoxy(INFO_X, ITEM_Y, "속도 감소!");
+                gotoxy(INFO_X, ITEM_Y, "º”µµ ∞®º“!");
                 break;
             case 3:
                 getHeart();
                 gotoxy(INFO_X, ITEM_Y, "                  ");
-                gotoxy(INFO_X, ITEM_Y, "생명 +1"); // 수정 : 멘트, 이전 멘트를 지워야 할 거 같음
+                gotoxy(INFO_X, ITEM_Y, "ª˝∏Ì +1"); // ºˆ¡§ : ∏‡∆Æ, ¿Ã¿¸ ∏‡∆Æ∏¶ ¡ˆøˆæﬂ «“ ∞≈ ∞∞¿Ω
                 break;
             case 4:
                 dragonBallBomb();
                 gotoxy(INFO_X, ITEM_Y, "                  ");
-                gotoxy(INFO_X, ITEM_Y, "여의주 폭탄"); // 수정 : 멘트
+                gotoxy(INFO_X, ITEM_Y, "ø©¿«¡÷ ∆¯≈∫"); // ºˆ¡§ : ∏‡∆Æ
                 break;
             case 5:
                 getPet();
                 gotoxy(INFO_X, ITEM_Y, "                  ");
-                gotoxy(INFO_X, ITEM_Y, "펫 획득"); // 수정 : 멘트
+                gotoxy(INFO_X, ITEM_Y, "∆Í »πµÊ"); // ºˆ¡§ : ∏‡∆Æ
                 break;
             default:
                 gotoxy(INFO_X, ITEM_Y, "                  ");
@@ -1494,19 +1548,19 @@ void getItem() {
 
             createItem();
         }
-        else if (item->itemNo == 5) {    //안좋은아이템 (길이↑, 속도↑)
+        else if (item->itemNo == 5) {    //æ»¡¡¿∫æ∆¿Ã≈€ (±Ê¿Ã°Ë, º”µµ°Ë)
             int itemType = (rand() % 2) + 1;
 
             switch (itemType) {
-            case 1:        //길이↑
+            case 1:        //±Ê¿Ã°Ë
                 addBody();
                 gotoxy(INFO_X, ITEM_Y, "                  ");
-                gotoxy(INFO_X, ITEM_Y, "길이 증가!");
+                gotoxy(INFO_X, ITEM_Y, "±Ê¿Ã ¡ı∞°!");
                 break;
-            case 2:        //속도↑
+            case 2:        //º”µµ°Ë
                 speedUp();
                 gotoxy(INFO_X, ITEM_Y, "                  ");
-                gotoxy(INFO_X, ITEM_Y, "속도 증가!");
+                gotoxy(INFO_X, ITEM_Y, "º”µµ ¡ı∞°!");
                 break;
             default:
                 gotoxy(INFO_X, ITEM_Y, "                  ");
@@ -1517,7 +1571,7 @@ void getItem() {
             createItem();
         }
     }
-    //0 아무것도없는거, 1 벽장애물, 2 이무기몸, 3 여의주, 4 좋은아이템, 5 나쁜아이템,
+    //0 æ∆π´∞Õµµæ¯¥¬∞≈, 1 ∫Æ¿Âæ÷π∞, 2 ¿Ãπ´±‚∏ˆ, 3 ø©¿«¡÷, 4 ¡¡¿∫æ∆¿Ã≈€, 5 ≥™ª€æ∆¿Ã≈€,
 }
 
 void addDragonBall() {
@@ -1555,20 +1609,20 @@ void addDragonBall() {
         showDragonBall(ballX, ballY);dragonBallCount++;
     }
 
-
+    
 }
 
 void showDragonBall(int x, int y) {
     setTextColor(6);
-    gotoxy(x, y, "○");
+    gotoxy(x, y, "°€");
     setTextColor(15);
 }
 
 
-// 호출 : 구슬을 먹으면 실행
-// 이미 벽 또는 아이템이 출력된 곳에 출력하면 X
+// »£√‚ : ±∏ΩΩ¿ª ∏‘¿∏∏È Ω««‡
+// ¿ÃπÃ ∫Æ ∂«¥¬ æ∆¿Ã≈€¿Ã √‚∑¬µ» ∞˜ø° √‚∑¬«œ∏È X
 void addWall() {
-    if (dragonBallCount > 1) return; // 벽 생성 조건(구슬 개수)
+    if (dragonBallCount > 1) return; // ∫Æ ª˝º∫ ¡∂∞«(±∏ΩΩ ∞≥ºˆ)
 
     int wallX = (rand() % GBOARD_WIDTH) + GBOARD_ORIGIN_X;
     int wallY = (rand() % GBOARD_HEIGHT) + GBOARD_ORIGIN_Y;
@@ -1576,15 +1630,15 @@ void addWall() {
     do {
         wallX = (rand() % GBOARD_WIDTH) + GBOARD_ORIGIN_X; if (wallX % 2 == 1) wallX++;
         wallY = (rand() % GBOARD_HEIGHT) + GBOARD_ORIGIN_Y;
-    } while (detectCollision(wallX, wallY)); // 아무것도 없으면 0 반환됨
+    } while (detectCollision(wallX, wallY)); // æ∆π´∞Õµµ æ¯¿∏∏È 0 π›»Øµ
 
     setTextColor(14);
-    gotoxy(wallX, wallY, "▨");
+    gotoxy(wallX, wallY, "¢…");
     setTextColor(15);
 
     int arrX = (wallX - GBOARD_ORIGIN_X) / 2;
     int arrY = (wallY - GBOARD_ORIGIN_Y);
-    gameBoardInfo[arrY][arrX] = 1; // 벽 1
+    gameBoardInfo[arrY][arrX] = 1; // ∫Æ 1
 
     Wall* node = (Wall*)malloc(sizeof(Wall));
     node->direct = rand() % 4;
@@ -1609,25 +1663,25 @@ void setTextColor_rygbw(int colorNum) {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colorNum);
 }
 
-void changeMoogiColor() {      //이무기 색깔 세팅, 0빨 1노 2초 3파 4흰
+void changeMoogiColor() {      //¿Ãπ´±‚ ªˆ±Ú ºº∆√, 0ª° 1≥Î 2√  3∆ƒ 4»Ú
     moogiColor = rand() % 5;
 }
-void changeMoogiBodyColor() {   //이무기 몸 색깔 바꿈(countScore에서 불림)
+void changeMoogiBodyColor() {   //¿Ãπ´±‚ ∏ˆ ªˆ±Ú πŸ≤ﬁ(countScoreø°º≠ ∫“∏≤)
     setTextColor_rygbw(moogiColor);
-    gotoxy(head->position.X, head->position.Y, "◎");
+    gotoxy(head->position.X, head->position.Y, "°›");
     Moogi* p = head->back;
     while (p->back != NULL) {
-        gotoxy(p->position.X, p->position.Y, "●");
+        gotoxy(p->position.X, p->position.Y, "°‹");
         p = p->back;
     }
 }
 
-void setDragonBallColor() {     //한 번만 호출, 초기화용도
+void setDragonBallColor() {     //«— π¯∏∏ »£√‚, √ ±‚»≠øÎµµ
     for (int i = 0; i < 5; i++)
-        dragonBallColor[i] = i;     //0빨 1노 2초 3파 4흰
+        dragonBallColor[i] = i;     //0ª° 1≥Î 2√  3∆ƒ 4»Ú
 }
 
-void setDragonBallPos() {       //한 번만 호출, 초기화용도.
+void setDragonBallPos() {       //«— π¯∏∏ »£√‚, √ ±‚»≠øÎµµ.
     for (int i = 0; i < 5; i++) {
         dragonBallPos[i].X = 0;
         dragonBallPos[i].Y = 0;
@@ -1635,12 +1689,12 @@ void setDragonBallPos() {       //한 번만 호출, 초기화용도.
 }
 
 void showColorDragonBall(int x, int y, int color) {
-    setTextColor_rygbw(color);  //0빨 1노 2초 3파 4흰
-    gotoxy(x, y, "○");
+    setTextColor_rygbw(color);  //0ª° 1≥Î 2√  3∆ƒ 4»Ú
+    gotoxy(x, y, "°€");
     setTextColor(15);
 }
 
-void deleteDragonBall() {       //여의주 먹은 후 같은 색 아닌 여의주 지우는 용도(addDragonBall에서 불림)
+void deleteDragonBall() {       //ø©¿«¡÷ ∏‘¿∫ »ƒ ∞∞¿∫ ªˆ æ∆¥— ø©¿«¡÷ ¡ˆøÏ¥¬ øÎµµ(addDragonBallø°º≠ ∫“∏≤)
     for (int i = 0; i < 5; i++) {
         if (dragonBallPos[i].X != 0 && dragonBallPos[i].Y != 0) {
             int arrX = (dragonBallPos[i].X - GBOARD_ORIGIN_X) / 2;
@@ -1655,7 +1709,7 @@ void deleteDragonBall() {       //여의주 먹은 후 같은 색 아닌 여의�
     }
 }
 
-void waitToRecover() { // 여기서 키를 새로 입력 받을지, stage로 보내서(moogimove return 1) 입력받을지
+void waitToRecover() { // ø©±‚º≠ ≈∞∏¶ ªı∑Œ ¿‘∑¬ πﬁ¿ª¡ˆ, stage∑Œ ∫∏≥ªº≠(moogimove return 1) ¿‘∑¬πﬁ¿ª¡ˆ
     int key, flag = 0;
     gotoxycol(INFO_X, ITEM_Y + 1, 4, "PRESS TO CONTINUE");
     Moogi* p = head->back;
@@ -1665,10 +1719,10 @@ void waitToRecover() { // 여기서 키를 새로 입력 받을지, stage로 보
         for (int i = 0; ; i++) {
             if (stage == 3) {
                 setTextColor_rygbw(moogiColor);
-                gotoxy(p->position.X, p->position.Y, "○");
+                gotoxy(p->position.X, p->position.Y, "°€");
             }
             else
-                gotoxycol(p->position.X, p->position.Y, 15, "○");
+                gotoxycol(p->position.X, p->position.Y, 15, "°€");
             if (p->back == NULL) break;
             p = p->back;
         }
@@ -1677,10 +1731,10 @@ void waitToRecover() { // 여기서 키를 새로 입력 받을지, stage로 보
         for (int i = 0; ; i++) {
             if (stage == 3) {
                 setTextColor_rygbw(moogiColor);
-                gotoxy(p->position.X, p->position.Y, "●");
+                gotoxy(p->position.X, p->position.Y, "°‹");
             }
             else
-                gotoxycol(p->position.X, p->position.Y, 15, "●");
+                gotoxycol(p->position.X, p->position.Y, 15, "°‹");
             if (p->back == NULL) break;
             p = p->back;
         }
@@ -1733,7 +1787,7 @@ void waitToRecover() { // 여기서 키를 새로 입력 받을지, stage로 보
                 }
             }
 
-            Sleep(15); // 플레이 속도 조절
+            Sleep(15); // «√∑π¿Ã º”µµ ¡∂¿˝
         }
         p = head->back;
         if (flag == 1) break;
@@ -1748,4 +1802,174 @@ void waitToRecover() { // 여기서 키를 새로 입력 받을지, stage로 보
     if (flag == 0) {
         return;
     }
+}
+
+void createFever() // FEVER æ∆¿Ã≈€ ª˝º∫
+{
+    if (isFever()) return;
+
+    int ch;
+    for (int i = 0; i < 5; i++)
+    {
+        if (fever[i] == 2) return;
+        if (fever[i] == 0)
+        {
+            ch = i;
+            break;
+        }
+    }
+
+    int feverX = (rand() % GBOARD_WIDTH) + GBOARD_ORIGIN_X;
+    int feverY = (rand() % GBOARD_HEIGHT) + GBOARD_ORIGIN_Y;
+
+    do {
+        feverX = (rand() % GBOARD_WIDTH) + GBOARD_ORIGIN_X; if (feverX % 2 == 1) feverX++;
+        feverY = (rand() % GBOARD_HEIGHT) + GBOARD_ORIGIN_Y;
+    } while (detectCollision(feverX, feverY));
+
+    int arrX = (feverX - GBOARD_ORIGIN_X) / 2;
+    int arrY = feverY - GBOARD_ORIGIN_Y;
+
+    switch (ch)
+    {
+    case 0:
+        gotoxycol(feverX, feverY, 10, "F");
+        setTextColor(15);
+        gameBoardInfo[arrY][arrX] = 7;
+        fever[0] = 2;
+        break;
+    case 1:
+        gotoxycol(feverX, feverY, 11, "E");
+        setTextColor(15);
+        gameBoardInfo[arrY][arrX] = 8;
+        fever[1] = 2;
+        break;
+    case 2:
+        gotoxycol(feverX, feverY, 12, "V");
+        setTextColor(15);
+        gameBoardInfo[arrY][arrX] = 9;
+        fever[2] = 2;
+        break;
+    case 3:
+        gotoxycol(feverX, feverY, 13, "E");
+        setTextColor(15);
+        gameBoardInfo[arrY][arrX] = 10;
+        fever[3] = 2;
+        break;
+    case 4:
+        gotoxycol(feverX, feverY, 14, "R");
+        setTextColor(15);
+        gameBoardInfo[arrY][arrX] = 11;
+        fever[4] = 2;
+        break;
+    }
+}
+
+void getFever() // »πµÊ«œ∏È FEVER πËø≠ √ ±‚»≠, GBOARD æ∆∑° FEVER «ˆ»≤ æ˜µ•¿Ã∆Æ
+{
+    int getIdx = detectCollision(head->position.X, head->position.Y);
+
+    switch (getIdx)
+    {
+    case 7:
+        fever[0] = 1;
+        gotoxycol(56, 25, 10, "F");
+        setTextColor(15);
+        break;
+    case 8:
+        fever[1] = 1;
+        gotoxycol(59, 25, 11, "E");
+        setTextColor(15);
+        break;
+    case 9:
+        fever[2] = 1;
+        gotoxycol(62, 25, 12, "V");
+        setTextColor(15);
+        break;
+    case 10:
+        fever[3] = 1;
+        gotoxycol(65, 25, 13, "E");
+        setTextColor(15);
+        break;
+    case 11:
+        fever[4] = 1;
+        gotoxycol(68, 25, 14, "R");
+        setTextColor(15);
+        feverStart = 1;
+        break;
+    default:
+        break;
+    }
+}
+
+int isFever()
+{
+    if (fever[4] == 1) return 1;
+    else return 0;
+}
+
+void fillFever()
+{
+    if (!feverStart) return;
+
+    feverStart = 0;
+    time(&ferverStartTime);
+
+    if (stage == 2)
+    {
+        Wall* p = wallHead, * pi = p;
+        while (p != NULL)
+        {
+            p = p->next;
+            free(pi);
+            pi = p;
+        }
+        wallHead = (Wall*)malloc(sizeof(Wall));
+        wallHead->next = NULL;
+    }
+
+    for (int y = GBOARD_ORIGIN_Y + 1; y < GBOARD_ORIGIN_Y + GBOARD_HEIGHT; y++)
+    {
+        for (int x = GBOARD_ORIGIN_X + 2; x < GBOARD_ORIGIN_X + GBOARD_WIDTH * 2 + 2; x+=2)
+        {
+            if (x == head->position.X && y == head->position.Y) continue;
+            if (detectCollision(x, y) != 2)
+            {
+                gotoxycol(x, y, 12, "°€");
+                
+                int arrX = (x - GBOARD_ORIGIN_X) / 2;
+                int arrY = y - GBOARD_ORIGIN_Y;
+                gameBoardInfo[arrY][arrX] = 12;
+            }
+        }
+    }
+
+    setTextColor(15);
+}
+
+void removeFever()
+{
+    for (int y = GBOARD_ORIGIN_Y + 1; y < GBOARD_ORIGIN_Y + GBOARD_HEIGHT; y++)
+    {
+        for (int x = GBOARD_ORIGIN_X + 2; x < GBOARD_ORIGIN_X + GBOARD_WIDTH * 2 + 2; x+=2)
+        {
+            if (x == head->position.X && y == head->position.Y) continue;
+            if (detectCollision(x, y) != 2)
+            {
+                gotoxycol(x, y, 12, "  ");
+
+                int arrX = (x - GBOARD_ORIGIN_X) / 2;
+                int arrY = y - GBOARD_ORIGIN_Y;
+                gameBoardInfo[arrY][arrX] = 0;
+            }
+        }
+    }
+
+    for (int i = 0; i < 5; i++) fever[i] = 0;
+    gotoxycol(56, 25, 15, "F  E  V  E  R");
+
+    feverStart = 0;
+
+    addDragonBall();
+    createItem();
 }
